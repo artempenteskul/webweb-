@@ -130,8 +130,6 @@ const deadline = '2021-01-27';
         }
     });
 
-    // const modalTimerId = setTimeout(openModal, 5000);
-
     function showModalByScroll() {
         if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
             openModal();
@@ -215,6 +213,57 @@ const deadline = '2021-01-27';
         'menu__item', 
         'big' 
     ).render();
+
+
+    // Отправляем данные на сервер (AJAX не работает)
+
+        const forms = document.querySelectorAll('form');
+
+        const message = {
+            loading: 'Loading...',
+            success: 'Its Success!',
+            failure: 'Something went wrong...'
+        };
+        
+        forms.forEach(item => {
+            postData(item);
+        });
+
+        function postData(form) {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const statusMessage = document.createElement('div');
+                statusMessage.classList.add('status');
+                statusMessage.textContent = message.loading;
+                form.append(statusMessage);
+
+                const request = new XMLHttpRequest();
+                request.open('POST', 'server.php');
+                
+                request.setRequestHeader('Content-type', 'multipart/form-data');
+                const formData = new FormData(form); 
+
+                request.send(formData);
+
+                request.addEventListener('load', () => {
+                    if (request.atstus === 200) {
+                        console.log(request.response);
+                        statusMessage.textContent = message.success;
+                    } else {
+                        statusMessage.textContent = message.failure;
+                    }
+                });
+            });
+        }
+    
+
+
+
+
+
+
+
 
 });
 
